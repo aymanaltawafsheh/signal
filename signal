@@ -1,0 +1,25 @@
+function [out,t]= wave_signal()
+syms t n
+n=(24);                 %set number of total harmonics to calculate
+
+T = (0.010);            %total peroid time
+w0=((2*pi)/T);          %Omega for given T
+f1=((500*t));           %This value is first piecewise functio
+f2=((2000*-t+10));      %second piecewise finction
+f3= ((-500*t+2.5));     %third piecewise 
+f4 = ((2000 *t-20));    %fourth piecewise
+a0 = double((((int((f1),t,0,0.004)) + (int((f2),t,0.004,0.005))...
++ (int((f3),t,0.005,0.009))))/10);   %calculate DC offset
+for k = 1 : n 
+a(k) = (int(f1*exp(-j*w0*k*t),t,0,0.004)+ int(f2*exp(-j*w0*k*t),t,0.004,0.005)...
+    + int(f3*exp(-j*w0*k*t),t,0.005,0.009) + int(f4*exp(-j*w0*k*t),t,0.009,0.010));%calculate a values
+end 
+for k = 1:n
+    expForm(k) = a(k)*200*exp(j*w0*k*t);%plug a values into exponential function
+end
+out = a0+sum(expForm);
+out=real(out);
+t = -2*T : T/1000 : 2*T;
+out = eval(out);
+
+end
